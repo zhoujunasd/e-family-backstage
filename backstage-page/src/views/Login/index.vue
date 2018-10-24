@@ -3,6 +3,7 @@
         <h2>党建e家后台管理系统</h2>
         <div class="login-wrap">
             <el-form ref="form" :rules="rules" :model="form">
+              <!-- required prop="账号" 账号 is required -->
                 <el-form-item label="账号：" prop="username">
                     <el-input v-model="form.username" placeholder='请输入账号'></el-input>
                 </el-form-item>
@@ -24,14 +25,17 @@ export default {
     return {
       form: {
         username: "admin",
-        password: "admin"
+        password: "admin",
       },
       rules: {
         username: [
-          { min: 4, max: 11, message: "长度在 4 到 11 个字符", trigger: "blur" }
+          // 限制用户输入的账号以及密码的格式和长度，trigger: "blur"：在失去焦点时验证，trigger: 'change'：在每次改变时验证
+          // { min: 4, max: 11, message: "长度在 4 到 11 个字符", trigger: "blur" },
+          { pattern:/^[a-zA-Z0-9]{4,10}$/, message: '请输入正确格式', trigger: 'blur', trigger: 'change' },
         ],
         password: [
-          { min: 4, max: 11, message: "长度在 4 到 11 个字符", trigger: "blur" }
+          // { min: 4, max: 11, message: "长度在 4 到 11 个字符", trigger: "blur" },
+          { pattern: /^[a-zA-Z0-9]{4,10}$/, message: '请输入正确格式', trigger: 'blur',trigger: 'change' }
         ]
       }
     };
@@ -40,9 +44,34 @@ export default {
     onSubmit(form) {
       this.$refs[form].validate(valid => {
         if (valid) {
-          this.$axios.post('')
+          this.$axios.post('/admine/login',this.form).then((res) => {
+            // console.log(res);
+            if(res.code == 200){
+              this.$message({
+                message: '成功登陆！',
+                type: 'success',
+                duration: 500,
+                center: true,
+              })
+              setTimeout(() => {
+                this.$router.push('/layout')
+              },500)
+            }else{
+              this.$message({
+                message: '登陆失败！',
+                type: 'error',
+                duration: 1000,
+                center: true,
+              })
+            }
+          })
         } else {
-          return false;
+          this.$message({
+            message: '账号或密码格式不正确！',
+            type: 'error',
+            duration: 1000,
+            center: true,
+          })
         }
       });
     }

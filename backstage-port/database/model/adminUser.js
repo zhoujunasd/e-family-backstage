@@ -12,7 +12,11 @@ const adminUser = new mongoose.Schema({
         required: true, 
     },
     avatar: String,
-    des: String,
+    // default值不会在返回数据内显示。
+    des: {
+        type: String,
+        default: '这个人很懒，什么都没留下。',
+    },
     phone: Number,
     sex: Number,
 },{versionKey: false, timestamps: {createdAt: 'create_time', updatedAt: 'update_time'}})

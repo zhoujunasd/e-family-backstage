@@ -28,6 +28,15 @@ export default {
     width: 0;
     height: 0;
   }
+  a{
+    // a标签去掉下划线
+    text-decoration: none;
+  }
+  // 表格图片样式
+  .table-item-img{
+    width: 60px;
+    height: 60px;
+  }
 </style>
 
 

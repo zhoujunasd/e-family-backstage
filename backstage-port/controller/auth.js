@@ -3,7 +3,7 @@ module.exports = function(req, res, next){
         next()
     }else{
         res.json({
-            code: 400,
+            code: 403,
             msg: '登录状态失效！',
         })
     }

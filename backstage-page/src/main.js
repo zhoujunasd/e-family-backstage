@@ -6,6 +6,9 @@ import './plugins/element.js'
 // import 'element-ui/lib/theme-chalk/index.css';
 import 'normalize.css/normalize.css'    //样式的初始化
 
+import $axios from './axios'
+Vue.prototype.$axios = $axios
+
 Vue.config.productionTip = false;
 
 new Vue({
