@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "app"
+  name: "app",
 };
 </script>
 
@@ -37,6 +37,13 @@ export default {
     width: 60px;
     height: 60px;
   }
+  // 栅格布局样式调整
+  // .el-menu{
+  //   border-right: none;
+  // }
+  // .el-submenu .el-menu-item{
+  //   min-width: 0;
+  // }
 </style>
 
 

@@ -66,9 +66,11 @@ import {
   Loading,
   MessageBox,
   Message,
-  Notification
+  Notification,
+  Scrollbar
 } from 'element-ui';
 
+Vue.use(Scrollbar);
 Vue.use(Pagination);
 Vue.use(Dialog);
 Vue.use(Autocomplete);

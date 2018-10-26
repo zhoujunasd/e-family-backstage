@@ -5,6 +5,7 @@
             class="el-menu-vertical-demo" 
             :router="true" 
             unique-opened
+            :default-active='activeIndex'
             @open="handleOpen" 
             @close="handleClose" 
             background-color="#545c64" 
@@ -38,14 +39,23 @@
             <el-submenu index="3">
                 <template slot="title">
                     <i class="el-icon-document"></i>
-                    <span slot="title">导航三</span>
+                    <span slot="title">新闻管理</span>
                 </template>
+                <el-menu-item-group>
+                    <el-menu-item index="/layout/news">新闻列表</el-menu-item>
+                    <el-menu-item index="/layout/addNews">添加新闻</el-menu-item>
+                </el-menu-item-group>
             </el-submenu>
             <el-submenu index="4">
                 <template slot="title">
                     <i class="el-icon-setting"></i>
-                    <span slot="title">导航四</span>
+                    <span slot="title">轮播图管理</span>
                 </template>
+                <el-menu-item-group>
+                    <el-menu-item index="/layout/swiper">轮播图列表</el-menu-item>
+                    <el-menu-item index="/layout/addSwiper">添加轮播图</el-menu-item>
+                    <!-- <el-menu-item index="/layout/editSwiper">编辑轮播图</el-menu-item> -->
+                </el-menu-item-group>
             </el-submenu>
         </el-menu>
     </div>
@@ -57,6 +67,7 @@ export default {
   data(){ 
       return{
         //   isCollapse: true
+        activeIndex: ""
       }
    },
   methods: {
@@ -66,6 +77,13 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     }
+  },
+  watch:{
+      $route(to,from){
+        //   console.log(to);
+        //   console.log(from);
+          this.activeIndex = to.path
+      }
   }
 };
 </script>

@@ -8,8 +8,18 @@ router.get('/', function(req, res, next) {
 
 const adminUser = require('../controller/adminUser')
 const upload = require('../controller/upload')
+const news = require('../controller/news')
+const category = require('../controller/category')
+const swiper = require('../controller/swiper')
+const jwt = require('../controller/jwt')
 
 router.use('/admine',adminUser)
 router.use(upload)
+router.use('/news',news)
+router.use('/category',category)
+router.use('/swiper',swiper)
+router.use('/jwt',jwt)
+
+
 
 module.exports = router;

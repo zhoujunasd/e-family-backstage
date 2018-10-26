@@ -9,6 +9,11 @@ const components = {
   Home: () => import('@/views/Home'),
   Admin: () => import('@/views/Admin'),
   addAdmine: () => import('@/views/Admin/addAdmine'),
+  News: () => import('@/views/News'),
+  addNews: () => import('@/views/News/addNews'),
+  Swiper: () => import('@/views/Swiper'),
+  addSwiper: () => import('@/views/Swiper/addSwiper'),
+  // editSwiper: () => import('@/views/Swiper/editSwiper'),
 }
 
 Vue.use(Router);
@@ -43,6 +48,31 @@ const router = new Router({
         name: 'addAdmine',
         meta: { title: '添加管理员' },
         component: components.addAdmine
+      },{
+        path: 'news',
+        name: 'news',
+        meta: { title: '新闻' },
+        component: components.News
+      },{
+        path: 'addNews',
+        name: 'addNews',
+        meta: { title: '添加新闻' },
+        component: components.addNews
+      },{
+        path: 'swiper',
+        name: 'swiper',
+        meta: { title: '轮播图' },
+        component: components.Swiper
+      },{
+        path: 'addSwiper',
+        name: 'addSwiper',
+        meta: { title: '添加轮播图' },
+        component: components.addSwiper
+      },{
+        path: 'editSwiper',
+        name: 'editSwiper',
+        meta: { title: '编辑轮播图' },
+        component: components.addSwiper
       }
     ]
   }]

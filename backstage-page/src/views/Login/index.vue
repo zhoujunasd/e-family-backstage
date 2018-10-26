@@ -2,10 +2,10 @@
     <div class="login">
         <h2>党建e家后台管理系统</h2>
         <div class="login-wrap">
-            <el-form ref="form" :rules="rules" :model="form">
+            <el-form ref="form" :rules="rules" :model="form" status-icon>
               <!-- required prop="账号" 账号 is required -->
-                <el-form-item label="账号：" prop="username">
-                    <el-input v-model="form.username" placeholder='请输入账号'></el-input>
+                <el-form-item label="账号：" prop="username" status-icon>
+                    <el-input v-model="form.username" placeholder='请输入账号' ></el-input>
                 </el-form-item>
                 <el-form-item label="密码：" prop="password">
                     <el-input v-model="form.password" type='password' placeholder='请输入密码'></el-input>

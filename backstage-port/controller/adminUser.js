@@ -49,7 +49,7 @@ router.post('/addAdminerUser', auth, async (req, res, next) => {
         } else {
             res.json({
                 code: 400,
-                msg: '错误'
+                msg: '用户注册失败！'
             })
         }
     }
@@ -96,6 +96,7 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
+// 获取所有管理员
 router.get('/adminUser', auth, async (req, res, next) => {
     try {
         let { pn = 1, size = 5 } = req.body
@@ -106,7 +107,7 @@ router.get('/adminUser', auth, async (req, res, next) => {
             .sort({ _id: -1 })
             .limit(size)
             .skip((pn - 1) * size)
-            .select('-password -_id')
+            .select('-password')
         res.json({
             code: 200,
             msg: 'success',
@@ -120,4 +121,102 @@ router.get('/adminUser', auth, async (req, res, next) => {
     }
 })
 
+// 修改密码
+router.patch('/editPassword', auth, async(req, res, next) => {
+    try{    
+        let { username, password, newpassword} = req.body
+        const userdata = await adminUserDB.findOne({username})
+        if(password == userdata.password){
+            if(password == newpassword){
+                res.json({
+                    code: 400,
+                    msg: '原密码与旧密码一致！'
+                })
+            }else{
+                const data = await adminUserDB.update({username},{password: newpassword})
+                const updata = await adminUserDB.findOne({username}).select('-password')
+                res.json({
+                    code: 400,  
+                    msg:'密码修改成功！',
+                    data: updata
+                })
+            }
+        }else{
+            res.json({
+                code: 400,
+                msg: '密码不正确！'
+            })
+        }
+    }catch(err){
+        res.json({
+            code: 400,
+            msg: '密码修改失败！' + err
+        })
+    }
+})
+
+// 删除管理员
+// 通过账号密码删除数据
+router.delete('/delete',auth, async(req, res, next) => {
+    try{
+        let {username, password} = req.body
+        const data = await adminUserDB.findOne({username})
+        if(data.password == password){
+            const deldata = await adminUserDB.deleteOne({username})
+            res.json({
+                code: 200,
+                msg: '删除成功！',
+                data: deldata
+            })
+        } else {
+            res.json({
+                code: 400,
+                msg: '你不是该账号用户，无法删除！'
+            })
+        }
+    }catch(err) {
+        // next(err)
+        res.json({
+            code: 400,
+            msg: '删除失败'+err
+        })
+    }
+})
+
+// 修改管理员信息
+router.patch('/editAdmin',auth, async(req, res, next) => {
+    try {
+        let {username, nickname, avatar, des, sex, phone} = req.body
+        const userdata = await adminUserDB.findOne({username})
+        const update = await userdata.update({$set:{ nickname, avatar, des, sex, phone}})
+        const updated = await adminUserDB.findOne({username}).select('-password')
+        res.json({
+            code: 200,
+            msg: '修改成功！',
+            data: updated
+        })
+        // 对于过个数据的验证怎么简写？？？？？？？，一、必须五次验证，多或者函数遍历
+        // if( userdata.nickname == nickname && userdata.avatar == avatar
+        // userdata.des == des && userdata.sex == sex && userdata.phone == phone ){
+        //     res.json({
+        //         code: 400,
+        //         msg: '数据未修改！'
+        //     })
+        // }else{
+        //     const update = await userdata.update({$set:{ nickname, avatar, des, sex, phone}})
+        //     const updated = await adminUserDB.findOne({username}).select('password')
+        //     res.json({
+        //         code: 200,
+        //         msg: '修改成功！',
+        //         data: updated
+        //     })
+        // }
+    } catch (error) {
+        // next(error)
+        res.json({
+            code: 400,
+            msg: 'error:' + error
+        })
+    }
+})
 module.exports = router

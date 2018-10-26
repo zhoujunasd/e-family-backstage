@@ -1,6 +1,6 @@
 <template>
     <div class="addmin-wrap">
-        <el-card class="card-wrap">
+        <el-card class="card-wrap" shadow='never'>
             <div slot="header">添加管理员</div>
             <el-form class="demo-ruleForm" size='mini' ref='form' :model='formData' label-width="100px" label-position="left">
                 <el-form-item label="用户账号">
@@ -27,8 +27,8 @@
                         <el-option label='女' value='0'></el-option>
                     </el-select> -->
                     <el-radio-group v-model="formData.sex">
-                        <el-radio label="1">男</el-radio>
-                        <el-radio label="0">女</el-radio>
+                        <el-radio :label="1" >男</el-radio>
+                        <el-radio :label="0">女</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item>
@@ -53,7 +53,7 @@ export default {
         password: "",
         avatar: "",
         des: "",
-        sex: "",
+        sex: 1,
         phone: ""
       }
     };
@@ -62,14 +62,45 @@ export default {
     submitForm(form) {
       this.$refs[form].validate(valid => {
         if (valid) {
-          alert("submit!");
+          this.$axios.post('/admine/addAdminerUser',this.formData).then(res => {
+            //   console.log(res);
+              if(res.code == 200){
+                  this.$message({
+                      message: res.msg,
+                      type: "success",
+                      duration: 1000,
+                      center: true
+                  })
+                  setTimeout(()=>{this.$router.push('/layout/admin')},500)
+              }else{
+                  this.$message({
+                      message: res.msg,
+                      type: "error",
+                      duration: 1000,
+                      center: true
+                  })
+              }
+          }).catch((err) => {
+              this.$message({
+                message: "网络链接错误！" + err,
+                type: "error",
+                duration: 1000,
+                center: true
+              });
+          })
         } else {
-          console.log("error submit!!");
+          this.$message({
+            message: '数据格式不正确！！！',
+            type: 'error',
+            duration: 1000,
+            center: true,
+          })
           return false;
         }
       });
     },
     resetForm(form) {
+      console.log(this.$refs[form]);
       this.$refs[form].resetFields();
     }
   }
@@ -84,7 +115,7 @@ export default {
 /deep/ .el-upload{
     display: block;
     width: 80px;
-}
+} 
 /deep/ .avatar-uploader-icon {
   font-size: 14px;
   width: 80px;
@@ -96,7 +127,11 @@ export default {
   height: 80px;
 }
 .card-wrap {
-  width: 800px;
+    overflow: hidden;
+    // 计算样式
+//   width: calc(100vw - 500px);
+//   height: calc(100vh - 120px);
+    width: 800px;
   .demo-ruleForm{
       width: 500px
   }
