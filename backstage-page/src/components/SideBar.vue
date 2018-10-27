@@ -34,6 +34,7 @@
                 <el-menu-item-group>
                     <el-menu-item index="/layout/admin">管理员列表</el-menu-item>
                     <el-menu-item index="/layout/addAdmine">添加管理员</el-menu-item>
+                    <el-menu-item index="/layout/editAdmin">修改密码</el-menu-item>
                 </el-menu-item-group>
             </el-submenu>
             <el-submenu index="3">

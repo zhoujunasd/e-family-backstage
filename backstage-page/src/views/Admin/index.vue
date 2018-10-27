@@ -1,7 +1,7 @@
 <template>
     <div class="admin-wrap">
-        <el-card>
-            <div slot="header">管理员列表</div>
+        <el-card  v-loading="loading">
+            <div slot="header" class="header-card">管理员列表</div>
             <el-table :data="userInfor">
                 <!-- <el-table-column prop="username" label="姓名"></el-table-column> -->
                 <el-table-column prop="avatar" width='100' label="头像" align='center'>
@@ -12,7 +12,7 @@
                 <el-table-column prop="nickname" width='100' label="昵称" align='center' show-overflow-tooltip></el-table-column>
                 <el-table-column prop="des" width='300' label="个性签名" align='center' show-overflow-tooltip></el-table-column>
                 <el-table-column prop="create_time" width='180' label="创建时间" align='center' ></el-table-column>
-                <el-table-column prop="phone" width='100' label="电话" align='center'></el-table-column>
+                <el-table-column prop="phone" width='100' label="电话" align='center' show-overflow-tooltip></el-table-column>
                 <el-table-column prop="sex" width='80' label="性别" align='center'>
                   <template slot-scope="scope">
                     <div>{{scope.row.sex == 1 ? '男': '女' }}</div>
@@ -20,8 +20,8 @@
                 </el-table-column>
                 <el-table-column label="操作" width='200' align='center'>
                     <template slot-scope="scope">
-                        <el-button type="primary" size='mini'>编辑</el-button>
-                        <el-button type="danger" size='mini'>删除</el-button>
+                        <el-button type="primary" size='mini' @click="editclick(scope.row._id)">编辑</el-button>
+                        <el-button type="danger" size='mini' @click="delclick(scope.row.username)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -34,11 +34,66 @@ export default {
   name: "admin",
   data() {
     return {
-      userInfor: []
+      userInfor: [],
+      loading: true
     };
   },
   methods: {
+    delclick(username){
+      // 通过验证密码删除
+      this.$prompt('请输入用户密码', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+          // inputErrorMessage: '邮箱格式不正确'
+        }).then(({ value }) => {
+          this.$axios.del(`/admine/delete?username=${username}&password=${value}`,).then(res => {
+            // console.log(res);
+            if(res.code == 200){
+               this.$message({
+                type: 'success',
+                message: res.msg,
+                center: true
+              });
+              setTimeout(()=>{this.getData()},1000)
+            }else{
+              this.$message({
+                type: 'error',
+                message: 'error:'+res.msg,
+                center: true
+              });
+            }
+          })
+        }).catch((error) => {
+          this.$message({
+            type: 'info',
+            message: '取消删除！！！' + error,
+            duration: 100000,
+          });       
+        });
+        // 直接确认是否删除
+        // this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   type: 'warning'
+        // }).then(() => {
+        //   this.$message({
+        //     type: 'success',
+        //     message: '删除成功!'
+        //   });
+        // }).catch(() => {
+        //   this.$message({
+        //     type: 'info',
+        //     message: '已取消删除'
+        //   });          
+        // });
+    },
+    editclick(e){
+      // console.log(e);
+      this.$router.push({name: 'editAdmine', params: { id: e}})      
+    },
     getData() {
+      this.loading = true
       this.$axios
         .get("/admine/adminUser")
         .then(res => {
@@ -48,8 +103,10 @@ export default {
                 item.create_time = item.create_time.replace(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z/,'$1年$2月$3日$4点$5分')
                 return item
               })
+              this.loading = false
             this.userInfor = res.data;
           } else {
+            this.loading = false
             this.$message({
               message: res.msg,
               type: "error",
@@ -59,6 +116,7 @@ export default {
           }
         })
         .catch(err => {
+          this.loading = false
           this.$message({
             message: "网络链接错误！",
             type: "error",

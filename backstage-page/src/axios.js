@@ -87,6 +87,7 @@ const xhr = {
         let datastr = qs.stringify(data)
         return this.fatch(url, datastr, config, 'post')
     },
+    // DELETE方法不能用body传值
     del(url, data, config){
         return this.fatch(url, data, config, 'delete')
     },

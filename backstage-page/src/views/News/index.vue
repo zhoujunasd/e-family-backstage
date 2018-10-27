@@ -15,7 +15,7 @@
                 <el-table-column prop="type.title" width='80' label="类型" align='center'></el-table-column>
                 <el-table-column label="操作" width='200' align='center'>
                     <template slot-scope="scope">
-                        <el-button type="primary" size='mini'>编辑</el-button>
+                        <el-button type="primary" size='mini' @click="editclick()">编辑</el-button>
                         <el-button type="danger" size='mini'>删除</el-button>
                     </template>
                 </el-table-column>

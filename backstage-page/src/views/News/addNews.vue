@@ -13,7 +13,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label='新闻内容：'>
-                    <quill-editor 
+                    <quill-editor
                       v-model="formData.content" 
                       ref="myQuillEditor" 
                       :options="editorOption" 

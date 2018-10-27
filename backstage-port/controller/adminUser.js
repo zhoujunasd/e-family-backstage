@@ -1,6 +1,4 @@
-const {
-    Router
-} = require('express')
+const { Router } = require('express')
 const router = Router()
 const adminUserDB = require('../database/model/adminUser')
 // 导入自定义的中间件，对于session的判断
@@ -44,12 +42,12 @@ router.post('/addAdminerUser', auth, async (req, res, next) => {
         if (err.code == 11000) {
             res.json({
                 code: 400,
-                msg: '用户已注册！'
+                msg: '改用户账号已注册！'
             })
         } else {
             res.json({
                 code: 400,
-                msg: '用户注册失败！'
+                msg: '用户注册失败！'+err
             })
         }
     }
@@ -96,15 +94,16 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
-// 获取所有管理员
+// 获取所有管理员,除自己之外{_id: {$not: {$in: [req.session.user._id]}}}
 router.get('/adminUser', auth, async (req, res, next) => {
     try {
         let { pn = 1, size = 5 } = req.body
         pn = parseInt(pn)
         size = parseInt(size)
+        const count = await adminUserDB.count()
         const adminadta = await adminUserDB
-            .find()
-            .sort({ _id: -1 })
+            .find({_id: {$not: {$in: [req.session.user._id]}}})
+            .sort({create_time: 1,_id: -1 })
             .limit(size)
             .skip((pn - 1) * size)
             .select('-password')
@@ -112,11 +111,13 @@ router.get('/adminUser', auth, async (req, res, next) => {
             code: 200,
             msg: 'success',
             data: adminadta,
+            count,
+            asd: req.session
         })
     } catch (err) {
         res.json({
             code: 400,
-            msg: '查找失败',
+            msg: '查找失败'+err,
         })
     }
 })
@@ -124,8 +125,10 @@ router.get('/adminUser', auth, async (req, res, next) => {
 // 修改密码
 router.patch('/editPassword', auth, async(req, res, next) => {
     try{    
-        let { username, password, newpassword} = req.body
-        const userdata = await adminUserDB.findOne({username})
+        // let { username, password, newpassword} = req.body
+        // const userdata = await adminUserDB.findOne({username})
+        let {password, newpassword} = req.body
+        const userdata = await adminUserDB.findById(req.session.user._id)
         if(password == userdata.password){
             if(password == newpassword){
                 res.json({
@@ -133,10 +136,10 @@ router.patch('/editPassword', auth, async(req, res, next) => {
                     msg: '原密码与旧密码一致！'
                 })
             }else{
-                const data = await adminUserDB.update({username},{password: newpassword})
-                const updata = await adminUserDB.findOne({username}).select('-password')
+                const data = await adminUserDB.updateOne({_id:req.session.user._id},{password: newpassword})
+                const updata = await adminUserDB.findById({_id:req.session.user._id}).select('-password')
                 res.json({
-                    code: 400,  
+                    code: 200,  
                     msg:'密码修改成功！',
                     data: updata
                 })
@@ -159,14 +162,14 @@ router.patch('/editPassword', auth, async(req, res, next) => {
 // 通过账号密码删除数据
 router.delete('/delete',auth, async(req, res, next) => {
     try{
-        let {username, password} = req.body
+        let {username, password} = req.query
         const data = await adminUserDB.findOne({username})
         if(data.password == password){
             const deldata = await adminUserDB.deleteOne({username})
             res.json({
                 code: 200,
-                msg: '删除成功！',
-                data: deldata
+                msg: '删除成功！！！',
+                data: deldata,
             })
         } else {
             res.json({
@@ -178,7 +181,27 @@ router.delete('/delete',auth, async(req, res, next) => {
         // next(err)
         res.json({
             code: 400,
-            msg: '删除失败'+err
+            msg: '删除失败'+err,
+            body: req.body
+        })
+    }
+})
+
+// 获取单个管理员的信息
+router.get('/getAdmin/:id',auth, async(req, res, next) => {
+    try {
+        const id = req.params.id
+        const data = await adminUserDB.findById(id).select('-password')
+        res.json({
+            code: 200,
+            msg: 'success',
+            data,
+        })
+    } catch (error) {
+        // next(error)
+        res.json({
+            code: 400,
+            msg: 'error'+ error
         })
     }
 })
@@ -188,7 +211,7 @@ router.patch('/editAdmin',auth, async(req, res, next) => {
     try {
         let {username, nickname, avatar, des, sex, phone} = req.body
         const userdata = await adminUserDB.findOne({username})
-        const update = await userdata.update({$set:{ nickname, avatar, des, sex, phone}})
+        const update = await userdata.updateOne({$set:{ nickname, avatar, des, sex, phone}})
         const updated = await adminUserDB.findOne({username}).select('-password')
         res.json({
             code: 200,
@@ -219,4 +242,5 @@ router.patch('/editAdmin',auth, async(req, res, next) => {
         })
     }
 })
+
 module.exports = router

@@ -7,11 +7,11 @@ const common = new mongoose.Schema({
         required: true
     },
     user:{
-        tyep: ObjectId,
+        type: ObjectId,
         ref: 'admin_user'
     },
     topic:{
-        tyep: ObjectId,
+        type: ObjectId,
         ref: 'topic'
     }
 },{versionKey: false, timestamps: {createdAt: 'create_time', updatedAt: 'update_time'}});

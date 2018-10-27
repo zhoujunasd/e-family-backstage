@@ -4,6 +4,7 @@ const auth = require('./auth')
 const swiperModel = require('../database/model/swiper')
 const newsModel = require('../database/model/news')
 
+// 添加轮播图
 router.post('/addSwiper',auth ,async (req, res, next) => {
     try{
         let { title, img, newsId, sort, status } = req.body
@@ -22,6 +23,7 @@ router.post('/addSwiper',auth ,async (req, res, next) => {
     }
 })
 
+// 获取轮播图列表
 router.get('/getSwiper',auth ,async (req, res, next)=> {
     try{
         let {page = 1, page_size = 10} = req.query

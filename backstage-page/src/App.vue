@@ -44,6 +44,14 @@ export default {
   // .el-submenu .el-menu-item{
   //   min-width: 0;
   // }
+  .header-card{
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+  }
+  .el-card__body{
+
+  }
 </style>
 
 

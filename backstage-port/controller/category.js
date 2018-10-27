@@ -3,6 +3,7 @@ const router  = Router();
 const auth = require('./auth')
 const categoryModel = require('../database/model/category')
 
+// 添加分类
 router.post('/addcategory', auth, async (req, res, next) => {
     try{
         let { title, icon,} = req.body
@@ -21,6 +22,7 @@ router.post('/addcategory', auth, async (req, res, next) => {
     }
 })
 
+// 获取分类
 router.get('/getcategory',(req, res, next) => {
     // 对于简单的数据获取，不使用异步操作
     // async

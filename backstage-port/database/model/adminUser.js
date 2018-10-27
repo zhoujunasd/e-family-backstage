@@ -11,7 +11,10 @@ const adminUser = new mongoose.Schema({
         type: String,
         required: true, 
     },
-    avatar: String,
+    avatar: {
+        type: String,
+        default: 'http://pbl.yaojunrong.com/FgbT6pP6UP6t8wYqaTBpYldQhG4w'
+    },
     // default值不会在返回数据内显示。
     des: {
         type: String,

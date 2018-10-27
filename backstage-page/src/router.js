@@ -9,6 +9,7 @@ const components = {
   Home: () => import('@/views/Home'),
   Admin: () => import('@/views/Admin'),
   addAdmine: () => import('@/views/Admin/addAdmine'),
+  editAdmin: () => import('@/views/Admin/editAdmin'),
   News: () => import('@/views/News'),
   addNews: () => import('@/views/News/addNews'),
   Swiper: () => import('@/views/Swiper'),
@@ -43,12 +44,26 @@ const router = new Router({
         name: 'admin',
         meta: { title: '管理员' },
         component: components.Admin
-      },{
+      }
+      ,{
         path: 'addAdmine',
         name: 'addAdmine',
         meta: { title: '添加管理员' },
         component: components.addAdmine
-      },{
+      },
+      ,{
+        path: 'editAdmine',
+        name: 'editAdmine',
+        meta: { title: '修改管理员' },
+        component: components.addAdmine
+      },
+      ,{
+        path: 'editAdmin',
+        name: 'editAdmin',
+        meta: { title: '修改密码' },
+        component: components.editAdmin
+      },
+      {
         path: 'news',
         name: 'news',
         meta: { title: '新闻' },
