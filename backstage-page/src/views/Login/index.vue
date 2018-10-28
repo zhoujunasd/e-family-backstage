@@ -45,7 +45,7 @@ export default {
       this.$refs[form].validate(valid => {
         if (valid) {
           this.$axios.post('/admine/login',this.form).then((res) => {
-            // console.log(res);
+            console.log(res);
             if(res.code == 200){
               this.$message({
                 message: '成功登陆！',
@@ -58,7 +58,7 @@ export default {
               },500)
             }else{
               this.$message({
-                message: '登陆失败！',
+                message: res.msg,
                 type: 'error',
                 duration: 1000,
                 center: true,

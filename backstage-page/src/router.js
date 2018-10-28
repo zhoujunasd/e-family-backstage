@@ -68,12 +68,20 @@ const router = new Router({
         name: 'news',
         meta: { title: '新闻' },
         component: components.News
-      },{
+      }
+      ,{
         path: 'addNews',
         name: 'addNews',
         meta: { title: '添加新闻' },
         component: components.addNews
-      },{
+      }
+      ,{
+        path: 'editNews',
+        name: 'editNews',
+        meta: { title: '编辑新闻' },
+        component: components.addNews
+      }
+      ,{
         path: 'swiper',
         name: 'swiper',
         meta: { title: '轮播图' },

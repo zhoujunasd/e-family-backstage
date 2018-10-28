@@ -97,10 +97,10 @@ router.post('/login', async (req, res, next) => {
 // 获取所有管理员,除自己之外{_id: {$not: {$in: [req.session.user._id]}}}
 router.get('/adminUser', auth, async (req, res, next) => {
     try {
-        let { pn = 1, size = 5 } = req.body
+        let { pn = 1, size = 10 } = req.query
         pn = parseInt(pn)
         size = parseInt(size)
-        const count = await adminUserDB.count()
+        const count = await adminUserDB.count()-1
         const adminadta = await adminUserDB
             .find({_id: {$not: {$in: [req.session.user._id]}}})
             .sort({create_time: 1,_id: -1 })
@@ -112,12 +112,37 @@ router.get('/adminUser', auth, async (req, res, next) => {
             msg: 'success',
             data: adminadta,
             count,
-            asd: req.session
+            // asd: req.session
         })
     } catch (err) {
         res.json({
             code: 400,
             msg: '查找失败'+err,
+        })
+    }
+})
+// 获取或有管理员
+router.get('/getAlladminUser', auth, async (req, res, next) => {
+    try {
+        // let { pn = 1, size = 10 } = req.query
+        // pn = parseInt(pn)
+        // size = parseInt(size)
+        // const count = await adminUserDB.count()
+        const adminadta = await adminUserDB
+            .find()
+            .sort({create_time: 1,_id: -1 })
+            .select('-password')
+            // .skip((pn - 1) * size)
+            // .limit(size)
+        res.json({
+            code: 200,
+            msg: 'success',
+            data: adminadta,
+        })
+    } catch (err) {
+        res.json({
+            code: 400,
+            msg: '查找失败' + err,
         })
     }
 })

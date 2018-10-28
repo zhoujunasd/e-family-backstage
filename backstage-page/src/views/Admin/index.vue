@@ -25,6 +25,19 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <el-pagination
+            class="flr pagination"
+              background
+              small
+              layout="prev, pager, next"
+              @current-change='handleCurrentChange'
+              :page-size="4"
+              :total="total">
+              <!-- :pager-count="11"  最多显示页码数               
+              size-change pageSize 改变时会触发    回调参数:每页条数
+              prev-click  用户点击上一页按钮改变当前页后触发    回调参数:当前页
+              next-click-->
+            </el-pagination>
         </el-card>
     </div>
 </template>
@@ -35,10 +48,18 @@ export default {
   data() {
     return {
       userInfor: [],
-      loading: true
+      loading: true,
+      total: null,
+      page:　1,
+      size: 4,
     };
   },
   methods: {
+     handleCurrentChange(val) {
+        // console.log(`当前页: ${val}`);
+        this.page = val
+        this.getData()
+      },
     delclick(username){
       // 通过验证密码删除
       this.$prompt('请输入用户密码', '提示', {
@@ -68,7 +89,7 @@ export default {
           this.$message({
             type: 'info',
             message: '取消删除！！！' + error,
-            duration: 100000,
+            duration: 1000,
           });       
         });
         // 直接确认是否删除
@@ -95,9 +116,9 @@ export default {
     getData() {
       this.loading = true
       this.$axios
-        .get("/admine/adminUser")
+        .get(`/admine/adminUser?pn=${this.page}&size=${this.size}`)
         .then(res => {
-          // console.log(res);
+          console.log(res);
           if (res.code == 200) {
               res.data.forEach(item => {
                 item.create_time = item.create_time.replace(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z/,'$1年$2月$3日$4点$5分')
@@ -105,6 +126,7 @@ export default {
               })
               this.loading = false
             this.userInfor = res.data;
+            this.total = res.count 
           } else {
             this.loading = false
             this.$message({
@@ -136,4 +158,10 @@ export default {
 /deep/ .el-card{
   overflow: hidden;
 }
+.pagination{
+  margin: 15px 40px;
+}
+/deep/ .el-table td{
+  padding: 8px 0;
+} 
 </style>

@@ -5,6 +5,7 @@ const newsModel = require('../database/model/news')
 const adminUserModel = require('../database/model/adminUser')
 const categoryModel = require('../database/model/category')
 
+// 添加新闻
 router.post('/addnews',auth ,async (req, res, next) => {
     try{
         let {
@@ -30,6 +31,7 @@ router.post('/addnews',auth ,async (req, res, next) => {
     }
 })
 
+// 获取新闻列表
 router.get('/getnews',auth,async (req, res, next) => {
     try{
         let {page = 1, page_size = 10} = req.query
@@ -38,7 +40,7 @@ router.get('/getnews',auth,async (req, res, next) => {
         const count = await newsModel.count()
         const dataList  = await newsModel
             .find().skip((page-1)*page_size).limit(page_size)
-            .sort({_id: -1})
+            .sort({ create_time: 1, _id: -1})
             .populate({
                 path: 'author',
                 select: '-password'
@@ -71,7 +73,7 @@ router.get('/getNewsId',auth ,async (req, res, next) => {
         page_size = parseInt(page_size)
         const dataList  = await newsModel
             .find().skip((page-1)*page_size).limit(page_size)
-            .sort({_id: -1})
+            .sort({ create_time: 1, _id: -1})
             .select('_id title')
             res.json({
                 code: 200,
@@ -89,18 +91,27 @@ router.get('/getNewsId',auth ,async (req, res, next) => {
 
 })
 
+// 通过ID获取新闻内容
 router.get('/getnews/:id',auth,async (req, res, next) => {
     try{
         const {id} = req.params
         const dataList  = await newsModel.findById(id)
             .populate({
-                path: 'admin_user',
-                select: '-password'
+                path: 'author',
+                select: '_id nickname avatar'
             })
             .populate({
-                psth: 'category',
+                path: 'type',
             })
-            
+            // .populate({
+            //     path: 'author',
+            //     select: 'nickname avatar'
+            // })
+            // .populate({
+            //     path: 'type',
+            //     select:'title icon'
+            // })
+
             res.json({
                 code: 200,
                 msg: 'success',
@@ -111,6 +122,62 @@ router.get('/getnews/:id',auth,async (req, res, next) => {
          res.json({
             code: 400,
             msg: '新闻获取失败' + err
+        })
+    }
+})
+
+// 编辑新闻内容
+router.patch('/editNews', auth, async(req, res, next) => {
+    try {
+        const {
+            _id,
+            title,
+            content ,
+            contentText ,
+            img,
+            look_num,
+            type } = req.body
+            // console.log(req.body);
+            const userdata = await newsModel.findById(_id)
+            const update = await userdata.updateOne({$set:{title, content , contentText , img, look_num, type}})
+            const updated = await newsModel.findById(_id)
+                .populate({
+                    path: 'author',
+                    select: 'nickname avatar'
+                })
+                .populate({
+                    path: 'type',
+                    select:'title icon'
+                })
+            res.json({
+                code: 200,
+                msg: '修改成功！',
+                data: updated
+            })
+    } catch (error) {
+        res.json({
+            code: 400,
+            msg: 'error:' + error
+        })
+    }
+})
+
+// 删除一条新闻
+router.delete('/delete',auth, async(req, res, next) => {
+    try{
+        let { id } = req.query
+        const deldata = await newsModel.deleteOne({_id: id})
+        res.json({
+            code: 200,
+            msg: '删除成功！！！',
+            data: deldata,
+        })
+    }catch(err) {
+        // next(err)
+        res.json({
+            code: 400,
+            msg: '删除失败'+err,
+            body: req.body
         })
     }
 })

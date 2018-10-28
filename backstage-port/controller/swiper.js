@@ -29,9 +29,10 @@ router.get('/getSwiper',auth ,async (req, res, next)=> {
         let {page = 1, page_size = 10} = req.query
         page = parseInt(page)
         page_size = parseInt(page_size)
+        const count = await swiperModel.count()
         const swiperData  = await swiperModel
             .find().skip((page-1)*page_size).limit(page_size)
-            .sort({sort: -1})
+            .sort({ sort: -1})
             .populate({
                 path: 'newsId',
                 // select: ''
@@ -40,7 +41,8 @@ router.get('/getSwiper',auth ,async (req, res, next)=> {
             res.json({
                 code: 200,
                 msg: 'success',
-                data: swiperData
+                data: swiperData,
+                count
             })
     }catch(err){
          // next(err)
@@ -51,15 +53,39 @@ router.get('/getSwiper',auth ,async (req, res, next)=> {
     }
 })
 
+// 通过ID获取轮播图
+router.get('/getswiper/:id',auth,async (req, res, next) => {
+    try{
+        const {id} = req.params
+        const dataList  = await swiperModel.findById(id)
+            .populate({
+                path: 'newsId',
+            })
+
+            res.json({
+                code: 200,
+                msg: 'success',
+                data: dataList
+            })
+    }catch(err){
+         // next(err)
+         res.json({
+            code: 400,
+            msg: '新闻获取失败' + err
+        })
+    }
+})
+
 // 修改轮播图
 // $set{“updata”}修改，对于所有'updata'的属性，必须获取所有值，并重新赋值，否，数据丢失为null
 // 使用update({查找},{修改})，修改一条数据的部分内容
-router.patch('/updateSwiper/:id',auth ,async (req, res, next) => {
+router.patch('/updateSwiper',auth ,async (req, res, next) => {
     try{
-        const {id} = req.query
-        let { title, img, newsId, sort, status } = req.body
-        const Swiper = await swiperModel.findById(id)
-        const updataSwiper = await Swiper.update({$set:{ title, img, newsId, sort, status }})
+        // console.log(req.body);
+        // newsId
+        let {_id, title, img, sort, status } = req.body
+        const Swiper = await swiperModel.findById(_id)
+        const updataSwiper = await Swiper.updateOne({$set:{ title, img, sort, status }})
         res.json({
             code: 200,
             msg: '修改轮播图成功！',
@@ -74,4 +100,23 @@ router.patch('/updateSwiper/:id',auth ,async (req, res, next) => {
     }
 })
 
+// 删除轮播图
+router.delete('/delete',auth, async(req, res, next) => {
+    try{
+        let { id } = req.query
+        const deldata = await swiperModel.deleteOne({_id: id})
+        res.json({
+            code: 200,
+            msg: '删除成功！！！',
+            data: deldata,
+        })
+    }catch(err) {
+        // next(err)
+        res.json({
+            code: 400,
+            msg: '删除失败'+err,
+            body: req.body
+        })
+    }
+})
 module.exports = router

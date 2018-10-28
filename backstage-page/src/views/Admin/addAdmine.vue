@@ -9,13 +9,13 @@
                 <el-form-item label="用户昵称：" prop='nickname'>
                     <el-input v-model="formData.nickname"></el-input>
                 </el-form-item>
-                <el-form-item label='用户头像：'>
+                <el-form-item label='用户头像：' prop='avatar'>
                     <uploadImg class="uploadImg" v-model="formData.avatar"></uploadImg>
                 </el-form-item>
                 <el-form-item label="用户密码：" prop='password'>
                     <el-input v-model="formData.password" type='password' :disabled="isEdit"></el-input>
                 </el-form-item>
-                <el-form-item label="个人描述：">
+                <el-form-item label="个人描述：" prop='des'>
                     <el-input v-model="formData.des"></el-input>
                 </el-form-item>
                 <el-form-item label="联系电话：" prop='phone'>
@@ -153,7 +153,7 @@ export default {
       });
     },
     resetForm(form) {
-      console.log(this.$refs[form]);
+    //   console.log(this.$refs[form]);
       this.$refs[form].resetFields();
     },
     getData(){
