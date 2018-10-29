@@ -59,16 +59,17 @@ export default {
 //     }
 //   }
 // }
-.layout-wrap{
+.layout-wrap {
   overflow: hidden;
 }
-.sider-ber,.right-content{
+.sider-ber,
+.right-content {
   height: 100vh;
 }
-.header{
+.header {
   border-bottom: 1px solid #ccc;
 }
-.footer{
-    background-color: #ddd;
+.footer {
+  background-color: #ddd;
 }
 </style>

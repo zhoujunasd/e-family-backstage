@@ -42,7 +42,7 @@ const router = new Router({
       },{
         path: 'admin',
         name: 'admin',
-        meta: { title: '管理员' },
+        meta: { title: '管理员列表' },
         component: components.Admin
       }
       ,{
@@ -66,7 +66,7 @@ const router = new Router({
       {
         path: 'news',
         name: 'news',
-        meta: { title: '新闻' },
+        meta: { title: '新闻列表' },
         component: components.News
       }
       ,{

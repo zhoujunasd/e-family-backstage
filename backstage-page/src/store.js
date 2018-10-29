@@ -8,7 +8,14 @@ export default new Vuex.Store({
   state: {
     userInfo: {},
   },
-  mutations: {},
+  mutations: {
+    CHANGE_USERINFO(state,userInfo){
+      state.userInfo = userInfo
+    },
+    DELETE_USERINFO(state){
+      state.userInfo = {}
+    },
+  },
   actions: {},
   plugins: [createPersistedState({
     storage: {

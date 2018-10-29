@@ -246,7 +246,7 @@ export default {
     },
     getCategory(){
       this.$axios
-        .get("category/getcategory").then(res => {
+        .get("/category/getcategory").then(res => {
           // console.log(res);
           if (res.code == 200) {
             this.category = res.data;

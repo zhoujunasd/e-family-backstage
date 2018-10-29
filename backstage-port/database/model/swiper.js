@@ -19,7 +19,7 @@ const swiper = new mongoose.Schema({
         // type: Boolean,
         type: Number,
         default: 1,
-    }
+    },
 },{versionKey: false, timestamps: {createdAt: 'create_time', updatedAt: 'update_time'}});
 
 module.exports = mongoose.model('swiper',swiper);  

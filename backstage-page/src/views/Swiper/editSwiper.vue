@@ -5,11 +5,10 @@
 </template>
 
 <script>
-    export default {
-        name: 'editSwiper',
-    }
+export default {
+  name: "editSwiper"
+};
 </script>
 
 <style scoped>
-
 </style>

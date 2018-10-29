@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const router = Router()
 const adminUserDB = require('../database/model/adminUser')
+const newsModel = require('../database/model/news')
 // 导入自定义的中间件，对于session的判断
 const auth = require('./auth')
 
@@ -61,15 +62,15 @@ router.post('/login', async (req, res, next) => {
             password
         } = req.body
         if (username && password) {
-            const user = await adminUserDB.findOne({
-                username
-            })
+            const user = await adminUserDB.findOne({ username })
             if (user) {
                 if (password == user.password) {
                     req.session.user = user //将用户信息存进session
+                    const data = await adminUserDB.findOne({ username }).select('-password')
                     res.json({
                         code: 200,
                         msg: "登录成功！",
+                        data
                     })
                 } else {
                     res.json({
@@ -189,17 +190,32 @@ router.delete('/delete',auth, async(req, res, next) => {
     try{
         let {username, password} = req.query
         const data = await adminUserDB.findOne({username})
-        if(data.password == password){
-            const deldata = await adminUserDB.deleteOne({username})
-            res.json({
-                code: 200,
-                msg: '删除成功！！！',
-                data: deldata,
-            })
-        } else {
+        if(data){
+            const news = await newsModel.find({author: data._id })
+            if(news){
+                res.json({
+                    code: 400,
+                    msg: '此管理员尚有新闻挂载！'
+                })
+            }else{
+                if(data.password == password){
+                    const deldata = await adminUserDB.deleteOne({username})
+                    res.json({
+                        code: 200,
+                        msg: '删除成功！！！',
+                        data: deldata,
+                    })
+                } else {
+                    res.json({
+                        code: 400,
+                        msg: '你不是该账号用户，无法删除！'
+                    })
+                }
+            }
+        }else{
             res.json({
                 code: 400,
-                msg: '你不是该账号用户，无法删除！'
+                msg: '管理员不存在！'
             })
         }
     }catch(err) {

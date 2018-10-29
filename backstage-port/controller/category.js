@@ -40,4 +40,19 @@ router.get('/getcategory',(req, res, next) => {
         })
     })
 })
+
+// 数组类型数据时，可以直接创建
+// router.post('/postArray',async(req, res, next) => {
+//     try {
+//         const { title, icon, asd} = req.body
+//         const data = await categoryModel.create({ title, icon, asd})
+//         res.json({
+//             code: 200,
+//             msg: '',
+//             data
+//         })
+//     } catch (error) {
+//         next(error)
+//     }
+// })
 module.exports = router
