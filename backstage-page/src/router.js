@@ -24,7 +24,23 @@ const router = new Router({
   routes: [{
     path: '/',
     redirect: "/login",
-  }, {
+  },{
+    path:'/first',
+    name: 'first',
+    component: () => import('@/app-input-bug/first')
+  },{
+    path:'/second',
+    name: 'second',
+    component: () => import('@/app-input-bug/second')
+  },,{
+    path:'/firstInstant',
+    name: 'firstInstant',
+    component: () => import('@/instantMessaging/first')
+  },{
+    path:'/secondInstant',
+    name: 'secondInstant',
+    component: () => import('@/instantMessaging/second')
+  },{
     path: "/login",
     name: "login",
     meta: { title: '登录页' },

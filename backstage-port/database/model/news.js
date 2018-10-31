@@ -18,7 +18,7 @@ const news = new mongoose.Schema({
     },
     look_num: {
         type: Number,
-        default: 0
+        default: 0,
     },
 },{versionKey: false, timestamps: {createdAt: 'create_time', updatedAt: 'update_time'}});
 

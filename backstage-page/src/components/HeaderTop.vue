@@ -29,7 +29,28 @@ export default {
   methods:{
     quit(){
       this.$store.commit('DELETE_USERINFO')
-      this.$router.push('/login')
+      this.$axios.del('/admine/layout').then(res => {
+        if(res.code == 200 ){
+          this.$message({
+            type: "success",
+            message: res.msg,
+            center: true,
+          });
+        setTimeout(()=>{this.$router.push('/login')},1000)
+        }else{
+          this.$message({
+            type: "error",
+            message: res.msg,
+            center: true,
+          });
+        }
+      }).catch((err) => {
+        this.$message({
+            type: "error",
+            message: 'err:'+ err,
+            center: true,
+          });
+      })
     },
     editclick(id){
 

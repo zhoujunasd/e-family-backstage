@@ -284,4 +284,55 @@ router.patch('/editAdmin',auth, async(req, res, next) => {
     }
 })
 
+// 退出登录
+router.delete('/layout', auth, (req, res, next) => {
+    // if(req.session.user) {
+    //     req.session.user = null
+    //     res.json({
+    //         code:200,
+    //         msg: "退出登录成功！"
+    //     })
+    // }else{
+    //     res.json({
+    //         code:403,
+    //         msg: "登录状态已失效！"
+    //     })
+    // }
+
+    // req.session.destroy(function (err) {
+    //     if(err){
+    //         console.log(err)
+    //     }
+    //     else {
+    //         // 清除cookie，但是需要先在session内设置name
+    //         res.clearCookie('asdasd')
+    //         res.json({
+    //             code: 200,
+    //             msg: '退出登陆成功'
+    //         })
+    //     }
+    // })
+    if(req.session.user) {
+        req.session.destroy((err)=>{
+            if(err){
+                res.json({
+                    code:400,
+                    msg: 'error'+err
+                })
+            }else{
+                res.clearCookie('asdasd')
+                res.json({
+                    code:200,
+                    msg: "退出登录成功！"
+                })
+            }
+        })
+    }else{
+        res.json({
+            code:403,
+            msg: "未登录，怎么退出？"
+        })
+    }
+})
+
 module.exports = router

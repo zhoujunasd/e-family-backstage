@@ -24,6 +24,4 @@ router.use('/jwt',jwt)
 router.use('/topic',topic)
 router.use('/common',common)
 
-
-
 module.exports = router;

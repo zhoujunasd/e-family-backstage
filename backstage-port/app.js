@@ -15,6 +15,7 @@ var indexRouter = require('./routes/index');
 var app = express();
 
 app.use(session({
+  name:'asdasd',
   secret: 'zj',
   resave: false,
   saveUninitialized: false,
